@@ -1,0 +1,115 @@
+{
+  "disabledApps": [],
+  "global": [
+    {
+      "title": "记事本",
+      "icon": "📝",
+      "type": "process",
+      "target": "notepad.exe"
+    },
+    {
+      "title": "计算器",
+      "icon": "🧮",
+      "type": "process",
+      "target": "calc.exe"
+    },
+    {
+      "title": "资源管理器",
+      "icon": "📂",
+      "type": "process",
+      "target": "explorer.exe"
+    },
+    {
+      "title": "项目目录",
+      "icon": "🧰",
+      "type": "folder",
+      "target": "F:\\code\\quicker_my"
+    },
+    {
+      "title": "Quicker",
+      "icon": "🌐",
+      "type": "url",
+      "target": "https://getquicker.net/"
+    },
+    {
+      "title": "PowerShell",
+      "icon": "⌨",
+      "type": "process",
+      "target": "powershell.exe"
+    },
+    {
+      "title": "翻译",
+      "icon": "译",
+      "type": "translate",
+      "target": "input"
+    },
+    {
+      "title": "剪贴板",
+      "icon": "✎",
+      "type": "clipboardEdit",
+      "target": "text"
+    }
+  ],
+  "apps": {
+    "explorer.exe": [
+      {
+        "title": "桌面",
+        "icon": "🖥",
+        "type": "folder",
+        "target": "%USERPROFILE%\\Desktop"
+      },
+      {
+        "title": "下载",
+        "icon": "📥",
+        "type": "folder",
+        "target": "%USERPROFILE%\\Downloads"
+      },
+      {
+        "title": "用户目录",
+        "icon": "👤",
+        "type": "folder",
+        "target": "%USERPROFILE%"
+      },
+      {
+        "title": "命令行",
+        "icon": "▣",
+        "type": "process",
+        "target": "cmd.exe"
+      },
+      {
+        "title": "局域网共享",
+        "icon": "⇄",
+        "type": "lanShare",
+        "target": "currentFolder"
+      }
+    ],
+    "chrome.exe": [
+      {
+        "title": "新标签页",
+        "icon": "＋",
+        "type": "url",
+        "target": "https://www.google.com/"
+      },
+      {
+        "title": "Quicker",
+        "icon": "🌐",
+        "type": "url",
+        "target": "https://getquicker.net/"
+      }
+    ],
+    "msedge.exe": [
+      {
+        "title": "新标签页",
+        "icon": "＋",
+        "type": "url",
+        "target": "https://www.bing.com/"
+      },
+      {
+        "title": "Quicker",
+        "icon": "🌐",
+        "type": "url",
+        "target": "https://getquicker.net/"
+      }
+    ]
+  }
+}

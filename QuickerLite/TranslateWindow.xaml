@@ -1,0 +1,99 @@
+<Window x:Class="QuickerLite.TranslateWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="输入翻译"
+        Icon="Assets/AppIcon.ico"
+        Width="560"
+        Height="420"
+        MinWidth="360"
+        MinHeight="320"
+        MaxWidth="900"
+        MaxHeight="760"
+        SizeToContent="Manual"
+        ResizeMode="CanResize"
+        WindowStartupLocation="CenterScreen"
+        Topmost="True">
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="96"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel Margin="0,0,0,8">
+            <TextBlock Text="输入翻译"
+                       FontSize="14"
+                       FontWeight="SemiBold"
+                       Foreground="#FF333333"/>
+            <TextBlock Text="Enter 翻译，Shift+Enter 换行"
+                       DockPanel.Dock="Right"
+                       HorizontalAlignment="Right"
+                       Foreground="#FF777777"
+                       FontSize="12"/>
+        </DockPanel>
+
+        <Grid Grid.Row="1" Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="28"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <ComboBox x:Name="SourceLanguageComboBox"
+                      ItemsSource="{Binding SourceLanguages}"
+                      SelectedItem="{Binding SelectedSourceLanguage, Mode=TwoWay}"
+                      Height="28"
+                      DisplayMemberPath="Name"/>
+            <TextBlock Grid.Column="1"
+                       Text="→"
+                       FontSize="16"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Foreground="#FF666666"/>
+            <ComboBox x:Name="TargetLanguageComboBox"
+                      Grid.Column="2"
+                      ItemsSource="{Binding TargetLanguages}"
+                      SelectedItem="{Binding SelectedTargetLanguage, Mode=TwoWay}"
+                      Height="28"
+                      DisplayMemberPath="Name"/>
+        </Grid>
+
+        <TextBox x:Name="InputTextBox"
+                 Grid.Row="2"
+                 AcceptsReturn="True"
+                 TextWrapping="Wrap"
+                 VerticalScrollBarVisibility="Auto"
+                 Padding="7"
+                 FontSize="14"
+                 PreviewKeyDown="InputTextBox_PreviewKeyDown"/>
+
+        <Border Grid.Row="3"
+                Margin="0,10,0,8"
+                Padding="8,4"
+                CornerRadius="8"
+                HorizontalAlignment="Left"
+                Background="#FFF0F2F5">
+            <TextBlock Text="{Binding LanguageSummary}"
+                       Foreground="#FF666666"
+                       FontSize="12"/>
+        </Border>
+
+        <Border Grid.Row="4"
+                BorderBrush="#FFD6D6D6"
+                BorderThickness="1"
+                Background="#FFFFFFFF"
+                MinHeight="120">
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+                <TextBlock x:Name="ResultTextBlock"
+                           Text="翻译结果会显示在这里"
+                           TextWrapping="Wrap"
+                           Padding="9"
+                           FontSize="14"
+                           Foreground="#FF333333"/>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</Window>

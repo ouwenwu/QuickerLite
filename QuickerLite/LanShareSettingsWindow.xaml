@@ -1,0 +1,40 @@
+<Window x:Class="QuickerLite.LanShareSettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="局域网共享设置"
+        Icon="Assets/AppIcon.ico"
+        Width="360"
+        Height="190"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner">
+    <Grid Margin="14">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="72"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="IP 地址" VerticalAlignment="Center"/>
+        <TextBox x:Name="IpTextBox" Grid.Column="1" Height="28" Padding="6,2"/>
+
+        <TextBlock Grid.Row="1" Text="端口" Margin="0,10,0,0" VerticalAlignment="Center"/>
+        <TextBox x:Name="PortTextBox" Grid.Row="1" Grid.Column="1" Height="28" Margin="0,10,0,0" Padding="6,2"/>
+
+        <TextBlock Grid.Row="2"
+                   Grid.ColumnSpan="2"
+                   Text="IP 留空或无效时会自动获取局域网 IP。默认端口为 8080。"
+                   TextWrapping="Wrap"
+                   Foreground="#FF666666"
+                   Margin="0,12,0,0"/>
+
+        <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="保存" Width="72" Height="28" Margin="0,0,8,0" Click="SaveButton_Click"/>
+            <Button Content="取消" Width="72" Height="28" Click="CancelButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

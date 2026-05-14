@@ -1,0 +1,26 @@
+# Build outputs
+bin/
+obj/
+dist/
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Logs and temp files
+*.log
+*.tmp
+*.temp
+
+# Local publish/package artifacts
+*.zip
+*.7z
+*.msi
