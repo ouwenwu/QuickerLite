@@ -179,6 +179,36 @@
 - 迁移说明：不需要改 `target`。这是 Quicker Lite 内置动作，只要程序版本支持 `clipboardEdit` 即可复现。
 - 当前限制：只处理纯文本，不处理图片、文件列表或富文本格式。
 
+### ChatGPT
+
+```json
+{
+  "title": "ChatGPT",
+  "icon": "AI",
+  "type": "url",
+  "target": "https://chatgpt.com/"
+}
+```
+
+- 作用：打开 ChatGPT 网页。
+- 依赖：默认浏览器和网络连接。
+- 迁移说明：通常不需要修改。
+
+### Google学术
+
+```json
+{
+  "title": "Google学术",
+  "icon": "学",
+  "type": "url",
+  "target": "https://scholar.google.com/"
+}
+```
+
+- 作用：打开 Google Scholar。
+- 依赖：默认浏览器和网络连接，且目标网络环境可访问 Google Scholar。
+- 迁移说明：如果目标电脑无法访问 Google Scholar，可以把 `target` 改成镜像站或其他学术搜索网站。
+
 ## 当前软件栏动作
 
 ### explorer.exe：桌面
@@ -315,38 +345,6 @@
 - 作用：打开 Quicker 官网。
 - 依赖：默认浏览器和网络连接。
 - 迁移说明：通常不需要修改。
-
-### chrome.exe：ChatGPT
-
-```json
-{
-  "title": "ChatGPT",
-  "icon": "AI",
-  "type": "url",
-  "target": "https://chatgpt.com/"
-}
-```
-
-- 显示条件：在 `chrome.exe` 上单击中键打开面板时显示。
-- 作用：打开 ChatGPT 网页。
-- 依赖：默认浏览器和网络连接。
-- 迁移说明：通常不需要修改。
-
-### chrome.exe：Google学术
-
-```json
-{
-  "title": "Google学术",
-  "icon": "学",
-  "type": "url",
-  "target": "https://scholar.google.com/"
-}
-```
-
-- 显示条件：在 `chrome.exe` 上单击中键打开面板时显示。
-- 作用：打开 Google Scholar。
-- 依赖：默认浏览器和网络连接，且目标网络环境可访问 Google Scholar。
-- 迁移说明：如果目标电脑无法访问 Google Scholar，可以把 `target` 改成镜像站或其他学术搜索网站。
 
 ### msedge.exe：新标签页
 
