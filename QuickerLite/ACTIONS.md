@@ -314,6 +314,38 @@
 - 依赖：默认浏览器和网络连接。
 - 迁移说明：通常不需要修改。
 
+### chrome.exe：ChatGPT
+
+```json
+{
+  "title": "ChatGPT",
+  "icon": "AI",
+  "type": "url",
+  "target": "https://chatgpt.com/"
+}
+```
+
+- 显示条件：在 `chrome.exe` 上单击中键打开面板时显示。
+- 作用：打开 ChatGPT 网页。
+- 依赖：默认浏览器和网络连接。
+- 迁移说明：通常不需要修改。
+
+### chrome.exe：Google学术
+
+```json
+{
+  "title": "Google学术",
+  "icon": "学",
+  "type": "url",
+  "target": "https://scholar.google.com/"
+}
+```
+
+- 显示条件：在 `chrome.exe` 上单击中键打开面板时显示。
+- 作用：打开 Google Scholar。
+- 依赖：默认浏览器和网络连接，且目标网络环境可访问 Google Scholar。
+- 迁移说明：如果目标电脑无法访问 Google Scholar，可以把 `target` 改成镜像站或其他学术搜索网站。
+
 ### msedge.exe：新标签页
 
 ```json

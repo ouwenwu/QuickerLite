@@ -95,6 +95,18 @@
         "icon": "🌐",
         "type": "url",
         "target": "https://getquicker.net/"
+      },
+      {
+        "title": "ChatGPT",
+        "icon": "AI",
+        "type": "url",
+        "target": "https://chatgpt.com/"
+      },
+      {
+        "title": "Google学术",
+        "icon": "学",
+        "type": "url",
+        "target": "https://scholar.google.com/"
       }
     ],
     "msedge.exe": [
