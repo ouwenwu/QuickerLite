@@ -19,6 +19,7 @@ public sealed class MouseHookService : IDisposable
     }
 
     public event EventHandler<MiddleClickEventArgs>? MiddleClicked;
+    public event EventHandler<MiddleClickEventArgs>? MiddleReleased;
 
     public Func<int, int, bool>? ShouldSuppressMiddleClick { get; set; }
 
@@ -53,7 +54,7 @@ public sealed class MouseHookService : IDisposable
 
     private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
     {
-        if (nCode >= 0 && wParam == NativeMethods.WmMButtonDown)
+        if (nCode >= 0 && (wParam == NativeMethods.WmMButtonDown || wParam == NativeMethods.WmMButtonUp))
         {
             var info = Marshal.PtrToStructure<NativeMethods.Msllhookstruct>(lParam);
             var shouldSuppress = true;
@@ -73,7 +74,14 @@ public sealed class MouseHookService : IDisposable
 
             dispatcher.BeginInvoke(() =>
             {
-                MiddleClicked?.Invoke(this, new MiddleClickEventArgs(info.Pt.X, info.Pt.Y));
+                if (wParam == NativeMethods.WmMButtonDown)
+                {
+                    MiddleClicked?.Invoke(this, new MiddleClickEventArgs(info.Pt.X, info.Pt.Y));
+                }
+                else
+                {
+                    MiddleReleased?.Invoke(this, new MiddleClickEventArgs(info.Pt.X, info.Pt.Y));
+                }
             });
 
             return new IntPtr(1);

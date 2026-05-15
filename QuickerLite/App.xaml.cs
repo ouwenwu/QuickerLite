@@ -28,6 +28,7 @@ public partial class App : System.Windows.Application
         mouseHook = new MouseHookService(Dispatcher);
         mouseHook.ShouldSuppressMiddleClick = ShouldSuppressMiddleClick;
         mouseHook.MiddleClicked += OnMiddleClicked;
+        mouseHook.MiddleReleased += OnMiddleReleased;
         mouseHook.Start();
     }
 
@@ -45,8 +46,24 @@ public partial class App : System.Windows.Application
             return;
         }
 
+        if (panel.IsVisible)
+        {
+            panel.BeginMiddleSwipe(e.X, e.Y);
+            return;
+        }
+
         var processName = processService.GetProcessNameAt(e.X, e.Y);
-        panel.ToggleAt(e.X, e.Y, processName);
+        panel.ShowAt(e.X, e.Y, processName);
+    }
+
+    private void OnMiddleReleased(object? sender, MiddleClickEventArgs e)
+    {
+        if (panel is null || !panel.IsVisible)
+        {
+            return;
+        }
+
+        panel.EndMiddleSwipe(e.X, e.Y);
     }
 
     private bool ShouldSuppressMiddleClick(int x, int y)
