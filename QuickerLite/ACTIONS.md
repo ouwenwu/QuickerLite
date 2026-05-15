@@ -43,6 +43,7 @@
 - `clipboardEdit`：Quicker Lite 内置动作。打开剪贴板文本编辑窗口，修改后写回剪贴板。
 - `lanShare`：Quicker Lite 内置动作。用于把资源管理器当前文件夹临时共享到局域网，其他设备可通过浏览器访问。
 - `softwareList`：Quicker Lite 内置动作。打开常用软件启动器，右键可进入软件列表管理。
+- `windowTopMost`：Quicker Lite 内置动作。点击后选择一个窗口，将其置顶；再次选择同一窗口会取消置顶。
 
 ## 通用栏动作
 
@@ -230,6 +231,24 @@
 - 删除软件：管理窗口里的“删除”只会从常用软件列表移除记录，不会删除真实软件文件。
 - 配置位置：软件列表保存到 `%APPDATA%\\QuickerLite\\software-list.json`，图标缓存保存到 `%APPDATA%\\QuickerLite\\SoftwareIcons\\`。
 - 迁移说明：`actions.json` 只保留这个入口动作，不保存本机软件路径；换电脑后需要在管理窗口重新添加该电脑上的常用软件。
+
+### 窗口置顶
+
+```json
+{
+  "title": "窗口置顶",
+  "icon": "PIN",
+  "type": "windowTopMost",
+  "target": "pick"
+}
+```
+
+- 作用：选择一个已经打开的软件窗口，并把该窗口保持在其他窗口前面。
+- 左键行为：进入全屏半透明选择模式，单击要置顶的窗口；按 `Esc` 取消。
+- 取消置顶：如果该窗口已经由 Quicker Lite 置顶，再次使用该动作选择同一窗口会取消置顶。
+- 右键行为：只显示通用的“删除当前动作”。
+- 依赖：Windows 桌面窗口和 `SetWindowPos` API。普通 Win32 窗口通常可用，部分系统窗口、UWP 或特殊渲染窗口可能无法置顶或取消。
+- 迁移说明：不需要改 `target`。置顶状态只在本次运行期间记录，重启 Quicker Lite 后不会自动恢复历史置顶窗口。
 
 ## 当前软件栏动作
 

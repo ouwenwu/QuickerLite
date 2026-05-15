@@ -66,6 +66,12 @@
       "icon": "APP",
       "type": "softwareList",
       "target": "default"
+    },
+    {
+      "title": "窗口置顶",
+      "icon": "PIN",
+      "type": "windowTopMost",
+      "target": "pick"
     }
   ],
   "apps": {

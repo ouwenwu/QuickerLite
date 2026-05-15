@@ -11,6 +11,12 @@ internal static partial class NativeMethods
     public const int WmMouseWheel = 0x020A;
     public const int GaRoot = 2;
     public const uint ProcessQueryLimitedInformation = 0x1000;
+    public const uint SwpNoSize = 0x0001;
+    public const uint SwpNoMove = 0x0002;
+    public const uint SwpNoActivate = 0x0010;
+
+    public static readonly IntPtr HwndTopMost = new(-1);
+    public static readonly IntPtr HwndNoTopMost = new(-2);
 
     public delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
 
@@ -49,6 +55,14 @@ internal static partial class NativeMethods
 
     [LibraryImport("user32.dll", SetLastError = true)]
     public static partial uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
+
+    [LibraryImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static partial bool IsWindow(IntPtr hWnd);
+
+    [LibraryImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static partial bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, uint flags);
 
     [LibraryImport("kernel32.dll", SetLastError = true)]
     public static partial IntPtr OpenProcess(uint processAccess, [MarshalAs(UnmanagedType.Bool)] bool inheritHandle, uint processId);

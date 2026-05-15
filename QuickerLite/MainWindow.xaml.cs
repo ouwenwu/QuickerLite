@@ -25,6 +25,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private readonly LanShareService lanShareService = new();
     private readonly LanShareSettingsService lanShareSettingsService = new();
     private readonly SoftwareListService softwareListService = new();
+    private readonly WindowTopMostService windowTopMostService = new();
     private ActionConfig config = new();
     private string currentProcessName = "";
     private string currentHeader = "当前";
@@ -204,7 +205,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
     }
 
-    private void ActionButton_Click(object sender, RoutedEventArgs e)
+    private async void ActionButton_Click(object sender, RoutedEventArgs e)
     {
         if (sender is System.Windows.Controls.Button { Tag: ActionItem action })
         {
@@ -233,6 +234,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             {
                 Hide();
                 ShowSoftwareListWindow();
+                return;
+            }
+
+            if (IsWindowTopMostAction(action))
+            {
+                Hide();
+                await StartWindowTopMostPickAsync();
                 return;
             }
 
@@ -625,6 +633,20 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         softwareListManageWindow.Activate();
     }
 
+    private async Task StartWindowTopMostPickAsync()
+    {
+        var result = await WindowTopMostPickerOverlay.PickAndToggleAsync(windowTopMostService);
+        if (result.Kind == WindowTopMostResultKind.Canceled)
+        {
+            return;
+        }
+
+        var icon = result.Kind is WindowTopMostResultKind.Pinned or WindowTopMostResultKind.Unpinned
+            ? MessageBoxImage.Information
+            : MessageBoxImage.Warning;
+        System.Windows.MessageBox.Show(this, result.Message, "窗口置顶", MessageBoxButton.OK, icon);
+    }
+
     private static bool IsTranslateAction(ActionItem action)
     {
         return string.Equals(action.Type, "translate", StringComparison.OrdinalIgnoreCase);
@@ -643,6 +665,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private static bool IsSoftwareListAction(ActionItem action)
     {
         return string.Equals(action.Type, "softwareList", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsWindowTopMostAction(ActionItem action)
+    {
+        return string.Equals(action.Type, "windowTopMost", StringComparison.OrdinalIgnoreCase);
     }
 
     private void CloseButton_Click(object sender, RoutedEventArgs e)
