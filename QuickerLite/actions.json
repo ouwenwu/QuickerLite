@@ -72,6 +72,12 @@
       "icon": "PIN",
       "type": "windowTopMost",
       "target": "pick"
+    },
+    {
+      "title": "Everything搜索",
+      "icon": "EV",
+      "type": "everythingSearch",
+      "target": "input"
     }
   ],
   "apps": {

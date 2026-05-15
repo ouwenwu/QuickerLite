@@ -1,0 +1,43 @@
+<Window x:Class="QuickerLite.EverythingSearchWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Everything搜索"
+        Icon="Assets/AppIcon.ico"
+        Width="460"
+        Height="132"
+        MinWidth="360"
+        MinHeight="120"
+        WindowStartupLocation="CenterOwner"
+        Topmost="True"
+        KeyDown="Window_KeyDown">
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel Margin="0,0,0,8">
+            <TextBlock Text="Everything搜索"
+                       FontSize="14"
+                       FontWeight="SemiBold"
+                       Foreground="#FF333333"/>
+            <TextBlock Text="Enter 搜索，Esc 关闭"
+                       DockPanel.Dock="Right"
+                       Foreground="#FF777777"
+                       FontSize="12"/>
+        </DockPanel>
+
+        <TextBox x:Name="QueryTextBox"
+                 Grid.Row="1"
+                 Height="34"
+                 Padding="8,5"
+                 FontSize="14"/>
+
+        <TextBlock Grid.Row="2"
+                   Text="使用 Everything.exe -search 启动搜索"
+                   Foreground="#FF888888"
+                   FontSize="11"
+                   Margin="2,7,0,0"/>
+    </Grid>
+</Window>

@@ -26,6 +26,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private readonly LanShareSettingsService lanShareSettingsService = new();
     private readonly SoftwareListService softwareListService = new();
     private readonly WindowTopMostService windowTopMostService = new();
+    private readonly EverythingSearchService everythingSearchService = new();
     private ActionConfig config = new();
     private string currentProcessName = "";
     private string currentHeader = "当前";
@@ -42,6 +43,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private ClipboardEditWindow? clipboardEditWindow;
     private SoftwareListWindow? softwareListWindow;
     private SoftwareListManageWindow? softwareListManageWindow;
+    private EverythingSearchWindow? everythingSearchWindow;
 
     public MainWindow(ActionConfigService configService)
     {
@@ -244,6 +246,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 return;
             }
 
+            if (IsEverythingSearchAction(action))
+            {
+                Hide();
+                ShowEverythingSearchWindow();
+                return;
+            }
+
             Hide();
             try
             {
@@ -337,6 +346,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             menu.Items.Add(new Separator());
             AddSoftwareListMenuItems(menu);
+        }
+        else if (IsEverythingSearchAction(action))
+        {
+            menu.Items.Add(new Separator());
+            AddEverythingSearchMenuItems(menu);
         }
 
         button.ContextMenu = menu;
@@ -474,6 +488,21 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         };
 
         menu.Items.Add(manageItem);
+    }
+
+    private void AddEverythingSearchMenuItems(ContextMenu menu)
+    {
+        var settingsItem = new MenuItem { Header = "设置 Everything 路径" };
+        settingsItem.Click += (_, _) =>
+        {
+            var window = new EverythingSearchSettingsWindow(everythingSearchService)
+            {
+                Owner = this
+            };
+            window.ShowDialog();
+        };
+
+        menu.Items.Add(settingsItem);
     }
 
     private void StartOrPromptLanShare()
@@ -633,6 +662,23 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         softwareListManageWindow.Activate();
     }
 
+    private void ShowEverythingSearchWindow()
+    {
+        if (everythingSearchWindow is { IsVisible: true })
+        {
+            everythingSearchWindow.Activate();
+            return;
+        }
+
+        everythingSearchWindow = new EverythingSearchWindow(everythingSearchService)
+        {
+            Owner = this
+        };
+        everythingSearchWindow.Closed += (_, _) => everythingSearchWindow = null;
+        everythingSearchWindow.Show();
+        everythingSearchWindow.Activate();
+    }
+
     private async Task StartWindowTopMostPickAsync()
     {
         var result = await WindowTopMostPickerOverlay.PickAndToggleAsync(windowTopMostService);
@@ -670,6 +716,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private static bool IsWindowTopMostAction(ActionItem action)
     {
         return string.Equals(action.Type, "windowTopMost", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsEverythingSearchAction(ActionItem action)
+    {
+        return string.Equals(action.Type, "everythingSearch", StringComparison.OrdinalIgnoreCase);
     }
 
     private void CloseButton_Click(object sender, RoutedEventArgs e)

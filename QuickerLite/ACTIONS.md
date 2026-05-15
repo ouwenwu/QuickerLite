@@ -44,6 +44,7 @@
 - `lanShare`：Quicker Lite 内置动作。用于把资源管理器当前文件夹临时共享到局域网，其他设备可通过浏览器访问。
 - `softwareList`：Quicker Lite 内置动作。打开常用软件启动器，右键可进入软件列表管理。
 - `windowTopMost`：Quicker Lite 内置动作。点击后选择一个窗口，将其置顶；再次选择同一窗口会取消置顶。
+- `everythingSearch`：Quicker Lite 内置动作。输入关键词后调用 Everything 搜索文件。
 
 ## 通用栏动作
 
@@ -249,6 +250,25 @@
 - 右键行为：只显示通用的“删除当前动作”。
 - 依赖：Windows 桌面窗口和 `SetWindowPos` API。普通 Win32 窗口通常可用，部分系统窗口、UWP 或特殊渲染窗口可能无法置顶或取消。
 - 迁移说明：不需要改 `target`。置顶状态只在本次运行期间记录，重启 Quicker Lite 后不会自动恢复历史置顶窗口。
+
+### Everything搜索
+
+```json
+{
+  "title": "Everything搜索",
+  "icon": "EV",
+  "type": "everythingSearch",
+  "target": "input"
+}
+```
+
+- 作用：打开一个关键词输入框，并调用 Everything 搜索文件。
+- 左键行为：打开搜索输入框，输入关键词后按 `Enter` 搜索，按 `Esc` 关闭。
+- 右键行为：在通用删除项下方显示“设置 Everything 路径”。
+- 搜索方式：优先使用设置中的 `Everything.exe` 路径；未设置时自动查找 `C:\\Program Files\\Everything\\Everything.exe`、`C:\\Program Files (x86)\\Everything\\Everything.exe` 和 `%LOCALAPPDATA%\\Everything\\Everything.exe`。
+- 调用方式：使用 `Everything.exe -search "关键词"`，不需要模拟粘贴；找不到 Everything 时提示用户设置路径。
+- 配置位置：Everything 路径保存到 `%APPDATA%\\QuickerLite\\everything-search-settings.json`。
+- 迁移说明：新电脑需要安装 Everything；如果不在默认路径，右键该动作设置一次路径即可。
 
 ## 当前软件栏动作
 
