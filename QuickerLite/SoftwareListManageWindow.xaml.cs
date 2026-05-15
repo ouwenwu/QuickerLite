@@ -2,7 +2,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using Microsoft.Win32;
 using QuickerLite.Models;
 using QuickerLite.Services;
 
@@ -46,7 +45,7 @@ public partial class SoftwareListManageWindow : Window, INotifyPropertyChanged
         EmptyVisibility = SoftwareItems.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private void AddButton_Click(object sender, RoutedEventArgs e)
+    private void AddFromFileButton_Click(object sender, RoutedEventArgs e)
     {
         var dialog = new Microsoft.Win32.OpenFileDialog
         {
@@ -56,12 +55,31 @@ public partial class SoftwareListManageWindow : Window, INotifyPropertyChanged
             Multiselect = false
         };
 
-        if (dialog.ShowDialog(this) != true)
+        if (dialog.ShowDialog(this) == true)
         {
+            AddSoftwareFromPath(dialog.FileName);
+        }
+    }
+
+    private async void AddFromWindowButton_Click(object sender, RoutedEventArgs e)
+    {
+        Hide();
+        var exePath = await WindowExePickerOverlay.PickExecutablePathAsync();
+        Show();
+        Activate();
+
+        if (string.IsNullOrWhiteSpace(exePath))
+        {
+            System.Windows.MessageBox.Show(this, "未能获取该窗口对应的 exe 路径。", "从窗口添加", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
-        var result = softwareListService.AddFromExe(dialog.FileName);
+        AddSoftwareFromPath(exePath);
+    }
+
+    private void AddSoftwareFromPath(string exePath)
+    {
+        var result = softwareListService.AddFromExe(exePath);
         switch (result)
         {
             case AddSoftwareResult.Added:

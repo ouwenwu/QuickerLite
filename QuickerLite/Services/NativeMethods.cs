@@ -10,6 +10,7 @@ internal static partial class NativeMethods
     public const int WmMButtonUp = 0x0208;
     public const int WmMouseWheel = 0x020A;
     public const int GaRoot = 2;
+    public const uint ProcessQueryLimitedInformation = 0x1000;
 
     public delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
 
@@ -48,4 +49,15 @@ internal static partial class NativeMethods
 
     [LibraryImport("user32.dll", SetLastError = true)]
     public static partial uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
+
+    [LibraryImport("kernel32.dll", SetLastError = true)]
+    public static partial IntPtr OpenProcess(uint processAccess, [MarshalAs(UnmanagedType.Bool)] bool inheritHandle, uint processId);
+
+    [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool QueryFullProcessImageNameW(IntPtr process, uint flags, System.Text.StringBuilder executablePath, ref uint size);
+
+    [LibraryImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static partial bool CloseHandle(IntPtr handle);
 }

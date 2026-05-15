@@ -84,9 +84,12 @@
             <Button Content="关闭"
                     DockPanel.Dock="Right"
                     Click="CloseButton_Click"/>
-            <Button Content="添加软件"
+            <Button Content="从窗口添加"
                     DockPanel.Dock="Right"
-                    Click="AddButton_Click"/>
+                    Click="AddFromWindowButton_Click"/>
+            <Button Content="从文件添加"
+                    DockPanel.Dock="Right"
+                    Click="AddFromFileButton_Click"/>
         </DockPanel>
     </Grid>
 </Window>
