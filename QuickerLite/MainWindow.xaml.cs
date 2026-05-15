@@ -32,7 +32,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private int lastAnchorX;
     private int lastAnchorY;
     private System.Windows.Point? globalSwipeStart;
-    private System.Windows.Point? middleSwipeStart;
     private int globalPageIndex;
     private int globalPageCount = 1;
     private string globalPageIndicator = "";
@@ -131,32 +130,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         ShowAt(screenX, screenY, processName);
     }
 
-    public void BeginMiddleSwipe(int screenX, int screenY)
-    {
-        middleSwipeStart = new System.Windows.Point(screenX, screenY);
-    }
-
-    public void EndMiddleSwipe(int screenX, int screenY)
-    {
-        if (middleSwipeStart is null)
-        {
-            return;
-        }
-
-        var start = middleSwipeStart.Value;
-        middleSwipeStart = null;
-        var deltaX = screenX - start.X;
-        var deltaY = screenY - start.Y;
-
-        if (Math.Abs(deltaX) >= SwipeThreshold && Math.Abs(deltaX) >= Math.Abs(deltaY) * 1.5)
-        {
-            GoToGlobalPage(deltaX < 0 ? globalPageIndex + 1 : globalPageIndex - 1);
-            return;
-        }
-
-        Hide();
-    }
-
     public void ShowAt(int screenX, int screenY, string processName)
     {
         lastAnchorX = screenX;
@@ -169,6 +142,16 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         UpdateLayout();
         KeepInsideScreen(screenX, screenY);
         Activate();
+    }
+
+    public void HandleGlobalWheelPage(int delta)
+    {
+        if (delta == 0 || globalPageCount <= 1)
+        {
+            return;
+        }
+
+        GoToGlobalPage(delta < 0 ? globalPageIndex + 1 : globalPageIndex - 1);
     }
 
     private void LoadCurrentActions(string processName)

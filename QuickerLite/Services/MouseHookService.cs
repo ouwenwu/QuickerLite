@@ -20,8 +20,10 @@ public sealed class MouseHookService : IDisposable
 
     public event EventHandler<MiddleClickEventArgs>? MiddleClicked;
     public event EventHandler<MiddleClickEventArgs>? MiddleReleased;
+    public event EventHandler<MouseWheelEventArgs>? MouseWheelScrolled;
 
     public Func<int, int, bool>? ShouldSuppressMiddleClick { get; set; }
+    public Func<int, int, bool>? ShouldHandleMouseWheel { get; set; }
 
     public void Start()
     {
@@ -87,6 +89,33 @@ public sealed class MouseHookService : IDisposable
             return new IntPtr(1);
         }
 
+        if (nCode >= 0 && wParam == NativeMethods.WmMouseWheel)
+        {
+            var info = Marshal.PtrToStructure<NativeMethods.Msllhookstruct>(lParam);
+            var shouldHandle = false;
+            try
+            {
+                shouldHandle = ShouldHandleMouseWheel?.Invoke(info.Pt.X, info.Pt.Y) ?? false;
+            }
+            catch
+            {
+                shouldHandle = false;
+            }
+
+            if (!shouldHandle)
+            {
+                return NativeMethods.CallNextHookEx(hookHandle, nCode, wParam, lParam);
+            }
+
+            var delta = unchecked((short)((info.MouseData >> 16) & 0xffff));
+            dispatcher.BeginInvoke(() =>
+            {
+                MouseWheelScrolled?.Invoke(this, new MouseWheelEventArgs(info.Pt.X, info.Pt.Y, delta));
+            });
+
+            return new IntPtr(1);
+        }
+
         return NativeMethods.CallNextHookEx(hookHandle, nCode, wParam, lParam);
     }
 }
@@ -95,4 +124,11 @@ public sealed class MiddleClickEventArgs(int x, int y) : EventArgs
 {
     public int X { get; } = x;
     public int Y { get; } = y;
+}
+
+public sealed class MouseWheelEventArgs(int x, int y, int delta) : EventArgs
+{
+    public int X { get; } = x;
+    public int Y { get; } = y;
+    public int Delta { get; } = delta;
 }

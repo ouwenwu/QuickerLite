@@ -8,6 +8,7 @@ internal static partial class NativeMethods
     public const int WhMouseLl = 14;
     public const int WmMButtonDown = 0x0207;
     public const int WmMButtonUp = 0x0208;
+    public const int WmMouseWheel = 0x020A;
     public const int GaRoot = 2;
 
     public delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);

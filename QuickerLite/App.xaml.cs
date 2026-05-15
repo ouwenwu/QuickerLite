@@ -27,8 +27,9 @@ public partial class App : System.Windows.Application
 
         mouseHook = new MouseHookService(Dispatcher);
         mouseHook.ShouldSuppressMiddleClick = ShouldSuppressMiddleClick;
+        mouseHook.ShouldHandleMouseWheel = ShouldHandleMouseWheel;
         mouseHook.MiddleClicked += OnMiddleClicked;
-        mouseHook.MiddleReleased += OnMiddleReleased;
+        mouseHook.MouseWheelScrolled += OnMouseWheelScrolled;
         mouseHook.Start();
     }
 
@@ -46,24 +47,18 @@ public partial class App : System.Windows.Application
             return;
         }
 
-        if (panel.IsVisible)
-        {
-            panel.BeginMiddleSwipe(e.X, e.Y);
-            return;
-        }
-
         var processName = processService.GetProcessNameAt(e.X, e.Y);
-        panel.ShowAt(e.X, e.Y, processName);
+        panel.ToggleAt(e.X, e.Y, processName);
     }
 
-    private void OnMiddleReleased(object? sender, MiddleClickEventArgs e)
+    private void OnMouseWheelScrolled(object? sender, MouseWheelEventArgs e)
     {
         if (panel is null || !panel.IsVisible)
         {
             return;
         }
 
-        panel.EndMiddleSwipe(e.X, e.Y);
+        panel.HandleGlobalWheelPage(e.Delta);
     }
 
     private bool ShouldSuppressMiddleClick(int x, int y)
@@ -75,6 +70,11 @@ public partial class App : System.Windows.Application
 
         var processName = processService.GetProcessNameAt(x, y);
         return !configService.IsAppDisabled(processName);
+    }
+
+    private bool ShouldHandleMouseWheel(int x, int y)
+    {
+        return panel is { IsVisible: true };
     }
 
     private void CreateTrayIcon()
