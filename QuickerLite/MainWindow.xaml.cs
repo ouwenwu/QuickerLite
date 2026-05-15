@@ -303,22 +303,91 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         }
 
         var menu = new ContextMenu();
+        AddDeleteActionMenuItem(menu, action);
+
         if (IsTranslateAction(action))
         {
+            menu.Items.Add(new Separator());
             AddTranslateMenuItems(menu);
         }
         else if (IsLanShareAction(action))
         {
+            menu.Items.Add(new Separator());
             AddLanShareMenuItems(menu);
-        }
-        else
-        {
-            return;
         }
 
         button.ContextMenu = menu;
         menu.IsOpen = true;
         e.Handled = true;
+    }
+
+    private void AddDeleteActionMenuItem(ContextMenu menu, ActionItem action)
+    {
+        var deleteItem = new MenuItem
+        {
+            Header = "删除当前动作",
+            FontWeight = FontWeights.SemiBold
+        };
+
+        deleteItem.Click += (_, _) => DeleteAction(action);
+        menu.Items.Add(deleteItem);
+    }
+
+    private void DeleteAction(ActionItem action)
+    {
+        var location = GetActionLocation(action);
+        if (location is null)
+        {
+            System.Windows.MessageBox.Show(this, "未能定位要删除的动作，请重新加载配置后再试。", "删除动作", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        var title = string.IsNullOrWhiteSpace(action.Title) ? "(未命名动作)" : action.Title;
+        var result = System.Windows.MessageBox.Show(
+            this,
+            $"确定删除“{title}”吗？\n\n位置：{location.Value.DisplayName}\n该操作会直接修改 actions.json。",
+            "删除当前动作",
+            MessageBoxButton.OKCancel,
+            MessageBoxImage.Question);
+
+        if (result != MessageBoxResult.OK)
+        {
+            return;
+        }
+
+        var removed = location.Value.IsGlobal
+            ? configService.RemoveGlobalAction(location.Value.Index)
+            : configService.RemoveAppAction(location.Value.ProcessName, location.Value.Index);
+
+        if (!removed)
+        {
+            System.Windows.MessageBox.Show(this, "删除失败：动作可能已经被修改或删除。", "删除动作", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        Reload();
+        LoadCurrentActions(currentProcessName);
+    }
+
+    private ActionLocation? GetActionLocation(ActionItem action)
+    {
+        var globalIndex = config.Global.FindIndex(item => ReferenceEquals(item, action));
+        if (globalIndex >= 0)
+        {
+            return new ActionLocation(true, "", globalIndex, "通用栏");
+        }
+
+        if (!string.IsNullOrWhiteSpace(currentProcessName)
+            && config.Apps.TryGetValue(currentProcessName, out var currentActions))
+        {
+            var currentIndex = currentActions.FindIndex(item => ReferenceEquals(item, action));
+            if (currentIndex >= 0)
+            {
+                return new ActionLocation(false, currentProcessName, currentIndex, $"{currentProcessName} 当前栏");
+            }
+        }
+
+        return null;
     }
 
     private void AddTranslateMenuItems(ContextMenu menu)
@@ -545,6 +614,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         Hide();
     }
+
+    private readonly record struct ActionLocation(bool IsGlobal, string ProcessName, int Index, string DisplayName);
 
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {

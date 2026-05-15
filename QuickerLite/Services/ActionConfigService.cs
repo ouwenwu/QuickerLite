@@ -96,6 +96,37 @@ public sealed class ActionConfigService
         Save(config);
     }
 
+    public bool RemoveGlobalAction(int index)
+    {
+        var config = current ?? Load();
+        if (index < 0 || index >= config.Global.Count)
+        {
+            return false;
+        }
+
+        config.Global.RemoveAt(index);
+        Save(config);
+        return true;
+    }
+
+    public bool RemoveAppAction(string processName, int index)
+    {
+        if (string.IsNullOrWhiteSpace(processName))
+        {
+            return false;
+        }
+
+        var config = current ?? Load();
+        if (!config.Apps.TryGetValue(processName, out var actions) || index < 0 || index >= actions.Count)
+        {
+            return false;
+        }
+
+        actions.RemoveAt(index);
+        Save(config);
+        return true;
+    }
+
     private void EnsureConfigFile()
     {
         if (File.Exists(ConfigPath))
