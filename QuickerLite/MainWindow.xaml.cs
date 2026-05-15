@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,6 +15,8 @@ namespace QuickerLite;
 
 public partial class MainWindow : Window, INotifyPropertyChanged
 {
+    private const int GlobalPageSize = 8;
+    private const double SwipeThreshold = 45;
     private readonly ActionConfigService configService;
     private readonly ActionExecutor executor = new();
     private readonly GoogleTranslateService translateService = new();
@@ -28,6 +31,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private bool canDisableCurrentApp;
     private int lastAnchorX;
     private int lastAnchorY;
+    private System.Windows.Point? globalSwipeStart;
+    private int globalPageIndex;
+    private int globalPageCount = 1;
+    private string globalPageIndicator = "";
+    private Visibility globalPageIndicatorVisibility = Visibility.Collapsed;
     private TranslateWindow? translateWindow;
     private ClipboardEditWindow? clipboardEditWindow;
 
@@ -43,7 +51,29 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     public ObservableCollection<ActionItem> GlobalActions { get; } = [];
 
+    public ObservableCollection<ActionItem> VisibleGlobalActions { get; } = [];
+
     public ObservableCollection<ActionItem> CurrentActions { get; } = [];
+
+    public string GlobalPageIndicator
+    {
+        get => globalPageIndicator;
+        private set
+        {
+            globalPageIndicator = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public Visibility GlobalPageIndicatorVisibility
+    {
+        get => globalPageIndicatorVisibility;
+        private set
+        {
+            globalPageIndicatorVisibility = value;
+            OnPropertyChanged();
+        }
+    }
 
     public string CurrentHeader
     {
@@ -83,6 +113,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             GlobalActions.Add(action);
         }
+
+        globalPageCount = Math.Max(1, (int)Math.Ceiling(GlobalActions.Count / (double)GlobalPageSize));
+        globalPageIndex = Math.Clamp(globalPageIndex, 0, globalPageCount - 1);
+        RefreshVisibleGlobalActions();
     }
 
     public void ToggleAt(int screenX, int screenY, string processName)
@@ -192,6 +226,63 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 System.Windows.MessageBox.Show(this, ex.Message, "动作执行失败", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
+    }
+
+    private void RefreshVisibleGlobalActions()
+    {
+        VisibleGlobalActions.Clear();
+        foreach (var action in GlobalActions.Skip(globalPageIndex * GlobalPageSize).Take(GlobalPageSize))
+        {
+            VisibleGlobalActions.Add(action);
+        }
+
+        GlobalPageIndicator = $"{globalPageIndex + 1}/{globalPageCount}";
+        GlobalPageIndicatorVisibility = globalPageCount > 1 ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void GlobalArea_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        globalSwipeStart = e.GetPosition(this);
+    }
+
+    private void GlobalArea_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        if (globalSwipeStart is null)
+        {
+            return;
+        }
+
+        var start = globalSwipeStart.Value;
+        globalSwipeStart = null;
+        var end = e.GetPosition(this);
+        var deltaX = end.X - start.X;
+        var deltaY = end.Y - start.Y;
+
+        if (Math.Abs(deltaX) < SwipeThreshold || Math.Abs(deltaX) < Math.Abs(deltaY) * 1.5)
+        {
+            return;
+        }
+
+        if (deltaX < 0)
+        {
+            GoToGlobalPage(globalPageIndex + 1);
+        }
+        else
+        {
+            GoToGlobalPage(globalPageIndex - 1);
+        }
+    }
+
+    private void GoToGlobalPage(int pageIndex)
+    {
+        var next = Math.Clamp(pageIndex, 0, globalPageCount - 1);
+        if (next == globalPageIndex)
+        {
+            return;
+        }
+
+        globalPageIndex = next;
+        RefreshVisibleGlobalActions();
     }
 
     private void ActionButton_RightClick(object sender, MouseButtonEventArgs e)

@@ -110,13 +110,30 @@
                 </Grid>
             </Border>
 
-            <ItemsControl Grid.Row="1" ItemsSource="{Binding GlobalActions}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Columns="4"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
+            <Grid Grid.Row="1"
+                  Background="Transparent"
+                  MouseLeftButtonDown="GlobalArea_MouseLeftButtonDown"
+                  MouseLeftButtonUp="GlobalArea_MouseLeftButtonUp">
+                <ItemsControl ItemsSource="{Binding VisibleGlobalActions}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="4" Rows="2"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+
+                <Border HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        Margin="0,0,7,5"
+                        Padding="5,1"
+                        CornerRadius="7"
+                        Background="#CCF2F2F2"
+                        Visibility="{Binding GlobalPageIndicatorVisibility}">
+                    <TextBlock Text="{Binding GlobalPageIndicator}"
+                               FontSize="11"
+                               Foreground="#FF666666"/>
+                </Border>
+            </Grid>
 
             <Border Grid.Row="2" Background="#FFD6D6D6">
                 <Grid>
