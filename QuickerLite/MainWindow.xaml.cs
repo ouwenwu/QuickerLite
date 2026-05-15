@@ -24,6 +24,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private readonly ExplorerPathService explorerPathService = new();
     private readonly LanShareService lanShareService = new();
     private readonly LanShareSettingsService lanShareSettingsService = new();
+    private readonly SoftwareListService softwareListService = new();
     private ActionConfig config = new();
     private string currentProcessName = "";
     private string currentHeader = "当前";
@@ -38,6 +39,8 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private Visibility globalPageIndicatorVisibility = Visibility.Collapsed;
     private TranslateWindow? translateWindow;
     private ClipboardEditWindow? clipboardEditWindow;
+    private SoftwareListWindow? softwareListWindow;
+    private SoftwareListManageWindow? softwareListManageWindow;
 
     public MainWindow(ActionConfigService configService)
     {
@@ -226,6 +229,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 return;
             }
 
+            if (IsSoftwareListAction(action))
+            {
+                Hide();
+                ShowSoftwareListWindow();
+                return;
+            }
+
             Hide();
             try
             {
@@ -314,6 +324,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         {
             menu.Items.Add(new Separator());
             AddLanShareMenuItems(menu);
+        }
+        else if (IsSoftwareListAction(action))
+        {
+            menu.Items.Add(new Separator());
+            AddSoftwareListMenuItems(menu);
         }
 
         button.ContextMenu = menu;
@@ -441,6 +456,18 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         menu.Items.Add(settingsItem);
     }
 
+    private void AddSoftwareListMenuItems(ContextMenu menu)
+    {
+        var manageItem = new MenuItem { Header = "软件列表管理" };
+        manageItem.Click += (_, _) =>
+        {
+            Hide();
+            ShowSoftwareListManageWindow();
+        };
+
+        menu.Items.Add(manageItem);
+    }
+
     private void StartOrPromptLanShare()
     {
         if (!lanShareService.IsRunning)
@@ -558,6 +585,46 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         clipboardEditWindow.Activate();
     }
 
+    private void ShowSoftwareListWindow()
+    {
+        if (softwareListWindow is { IsVisible: true })
+        {
+            softwareListWindow.Reload();
+            softwareListWindow.Activate();
+            return;
+        }
+
+        softwareListWindow = new SoftwareListWindow(softwareListService)
+        {
+            Owner = this
+        };
+        softwareListWindow.Closed += (_, _) => softwareListWindow = null;
+        softwareListWindow.Show();
+        softwareListWindow.Activate();
+    }
+
+    private void ShowSoftwareListManageWindow()
+    {
+        if (softwareListManageWindow is { IsVisible: true })
+        {
+            softwareListManageWindow.Reload();
+            softwareListManageWindow.Activate();
+            return;
+        }
+
+        softwareListManageWindow = new SoftwareListManageWindow(softwareListService)
+        {
+            Owner = this
+        };
+        softwareListManageWindow.Closed += (_, _) =>
+        {
+            softwareListWindow?.Reload();
+            softwareListManageWindow = null;
+        };
+        softwareListManageWindow.Show();
+        softwareListManageWindow.Activate();
+    }
+
     private static bool IsTranslateAction(ActionItem action)
     {
         return string.Equals(action.Type, "translate", StringComparison.OrdinalIgnoreCase);
@@ -571,6 +638,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private static bool IsClipboardEditAction(ActionItem action)
     {
         return string.Equals(action.Type, "clipboardEdit", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsSoftwareListAction(ActionItem action)
+    {
+        return string.Equals(action.Type, "softwareList", StringComparison.OrdinalIgnoreCase);
     }
 
     private void CloseButton_Click(object sender, RoutedEventArgs e)

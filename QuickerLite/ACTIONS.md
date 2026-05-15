@@ -42,6 +42,7 @@
 - `translate`：Quicker Lite 内置动作。左键打开输入翻译窗口；右键显示“输入翻译”和“截图翻译”。截图翻译会框选屏幕区域，OCR 识别文字后自动送入翻译窗口。
 - `clipboardEdit`：Quicker Lite 内置动作。打开剪贴板文本编辑窗口，修改后写回剪贴板。
 - `lanShare`：Quicker Lite 内置动作。用于把资源管理器当前文件夹临时共享到局域网，其他设备可通过浏览器访问。
+- `softwareList`：Quicker Lite 内置动作。打开常用软件启动器，右键可进入软件列表管理。
 
 ## 通用栏动作
 
@@ -210,6 +211,25 @@
 - 作用：打开 Google Scholar。
 - 依赖：默认浏览器和网络连接，且目标网络环境可访问 Google Scholar。
 - 迁移说明：如果目标电脑无法访问 Google Scholar，可以把 `target` 改成镜像站或其他学术搜索网站。
+
+### 常用软件
+
+```json
+{
+  "title": "常用软件",
+  "icon": "APP",
+  "type": "softwareList",
+  "target": "default"
+}
+```
+
+- 作用：打开 Quicker Lite 内置常用软件启动器，以图标网格显示已添加的软件。
+- 左键行为：打开“常用软件”窗口，单击其中的软件图标即可启动对应 exe。
+- 右键行为：在通用删除项下方显示“软件列表管理”。
+- 管理方式：在“软件列表管理”中点击“添加软件”，选择本地 `.exe` 文件；程序会自动读取软件名称、exe 文件名并提取图标。
+- 删除软件：管理窗口里的“删除”只会从常用软件列表移除记录，不会删除真实软件文件。
+- 配置位置：软件列表保存到 `%APPDATA%\\QuickerLite\\software-list.json`，图标缓存保存到 `%APPDATA%\\QuickerLite\\SoftwareIcons\\`。
+- 迁移说明：`actions.json` 只保留这个入口动作，不保存本机软件路径；换电脑后需要在管理窗口重新添加该电脑上的常用软件。
 
 ## 当前软件栏动作
 

@@ -60,6 +60,12 @@
       "icon": "学",
       "type": "url",
       "target": "https://scholar.google.com/"
+    },
+    {
+      "title": "常用软件",
+      "icon": "APP",
+      "type": "softwareList",
+      "target": "default"
     }
   ],
   "apps": {
