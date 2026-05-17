@@ -44,6 +44,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private SoftwareListWindow? softwareListWindow;
     private SoftwareListManageWindow? softwareListManageWindow;
     private EverythingSearchWindow? everythingSearchWindow;
+    private ColorPickerWindow? colorPickerWindow;
 
     public MainWindow(ActionConfigService configService)
     {
@@ -250,6 +251,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             {
                 Hide();
                 ShowEverythingSearchWindow();
+                return;
+            }
+
+            if (IsColorPickerAction(action))
+            {
+                Hide();
+                ShowColorPickerWindow();
                 return;
             }
 
@@ -679,6 +687,23 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         everythingSearchWindow.Activate();
     }
 
+    private void ShowColorPickerWindow()
+    {
+        if (colorPickerWindow is { IsVisible: true })
+        {
+            colorPickerWindow.Activate();
+            return;
+        }
+
+        colorPickerWindow = new ColorPickerWindow
+        {
+            Owner = this
+        };
+        colorPickerWindow.Closed += (_, _) => colorPickerWindow = null;
+        colorPickerWindow.Show();
+        colorPickerWindow.Activate();
+    }
+
     private async Task StartWindowTopMostPickAsync()
     {
         var result = await WindowTopMostPickerOverlay.PickAndToggleAsync(windowTopMostService);
@@ -721,6 +746,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private static bool IsEverythingSearchAction(ActionItem action)
     {
         return string.Equals(action.Type, "everythingSearch", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsColorPickerAction(ActionItem action)
+    {
+        return string.Equals(action.Type, "colorPicker", StringComparison.OrdinalIgnoreCase);
     }
 
     private void CloseButton_Click(object sender, RoutedEventArgs e)

@@ -45,6 +45,7 @@
 - `softwareList`：Quicker Lite 内置动作。打开常用软件启动器，右键可进入软件列表管理。
 - `windowTopMost`：Quicker Lite 内置动作。点击后选择一个窗口，将其置顶；再次选择同一窗口会取消置顶。
 - `everythingSearch`：Quicker Lite 内置动作。输入关键词后调用 Everything 搜索文件。
+- `colorPicker`：Quicker Lite 内置动作。打开屏幕取色器，支持基础色卡和屏幕像素取色。
 
 ## 通用栏动作
 
@@ -269,6 +270,25 @@
 - 调用方式：使用 `Everything.exe -search "关键词"`，不需要模拟粘贴；找不到 Everything 时提示用户设置路径。
 - 配置位置：Everything 路径保存到 `%APPDATA%\\QuickerLite\\everything-search-settings.json`。
 - 迁移说明：新电脑需要安装 Everything；如果不在默认路径，右键该动作设置一次路径即可。
+
+### 屏幕取色
+
+```json
+{
+  "title": "屏幕取色",
+  "icon": "COLOR",
+  "type": "colorPicker",
+  "target": "screen"
+}
+```
+
+- 作用：打开 Quicker Lite 内置取色器，显示基础色卡、当前颜色预览、HEX 和 RGB。
+- 左键行为：打开取色器窗口。点击色卡会更新当前颜色，并自动复制 HEX。
+- 屏幕取色：点击“取色”后进入全屏取色模式，鼠标附近显示像素级放大镜；单击屏幕像素确认颜色，按 `Esc` 取消。
+- 输出格式：HEX 使用 `#RRGGBB`，RGB 使用 `rgb(r, g, b)`。
+- 复制行为：选中色卡或屏幕像素后默认自动复制 HEX；也可以点击“复制HEX”或“复制RGB”手动复制。
+- 依赖：Windows 屏幕截图能力。第一版只输出不透明 RGB，不输出 Alpha。
+- 迁移说明：不需要改 `target`。基础色卡是程序内置固定色卡。
 
 ## 当前软件栏动作
 

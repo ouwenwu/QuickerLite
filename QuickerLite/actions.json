@@ -78,6 +78,12 @@
       "icon": "EV",
       "type": "everythingSearch",
       "target": "input"
+    },
+    {
+      "title": "屏幕取色",
+      "icon": "COLOR",
+      "type": "colorPicker",
+      "target": "screen"
     }
   ],
   "apps": {
