@@ -46,6 +46,7 @@
 - `windowTopMost`：Quicker Lite 内置动作。点击后选择一个窗口，将其置顶；再次选择同一窗口会取消置顶。
 - `everythingSearch`：Quicker Lite 内置动作。输入关键词后调用 Everything 搜索文件。
 - `colorPicker`：Quicker Lite 内置动作。打开屏幕取色器，支持基础色卡和屏幕像素取色。
+- `taskList`：Quicker Lite 内置动作。打开可编辑的计划/待办列表。
 
 ## 通用栏动作
 
@@ -289,6 +290,26 @@
 - 复制行为：选中色卡或屏幕像素后默认自动复制 HEX；也可以点击“复制HEX”或“复制RGB”手动复制。
 - 依赖：Windows 屏幕截图能力。第一版只输出不透明 RGB，不输出 Alpha。
 - 迁移说明：不需要改 `target`。基础色卡是程序内置固定色卡。
+
+### 计划列表
+
+```json
+{
+  "title": "计划列表",
+  "icon": "TODO",
+  "type": "taskList",
+  "target": "default"
+}
+```
+
+- 作用：打开 Quicker Lite 内置计划/待办列表，用来记录近期要做的事情。
+- 左键行为：打开可编辑任务表。字段包括日期、优先级、任务、目标结果、状态、备注。
+- 编辑方式：双击单元格直接编辑；可以新增任务、删除选中任务、保存、关闭。
+- 状态值：`待办`、`进行中`、`完成`、`搁置`。
+- 优先级：`P0`、`P1`、`P2`、`P3`。
+- 保存位置：`%APPDATA%\\QuickerLite\\task-list.json`。
+- 首次打开：如果没有任务文件，会自动生成一组 Quicker Lite 项目的近期任务，之后可自由编辑。
+- 迁移说明：`actions.json` 只保留入口动作；如需迁移实际任务数据，复制 `task-list.json`。
 
 ## 当前软件栏动作
 

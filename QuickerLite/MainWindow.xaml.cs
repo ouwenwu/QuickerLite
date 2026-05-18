@@ -27,6 +27,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private readonly SoftwareListService softwareListService = new();
     private readonly WindowTopMostService windowTopMostService = new();
     private readonly EverythingSearchService everythingSearchService = new();
+    private readonly TaskListService taskListService = new();
     private ActionConfig config = new();
     private string currentProcessName = "";
     private string currentHeader = "当前";
@@ -45,6 +46,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private SoftwareListManageWindow? softwareListManageWindow;
     private EverythingSearchWindow? everythingSearchWindow;
     private ColorPickerWindow? colorPickerWindow;
+    private TaskListWindow? taskListWindow;
 
     public MainWindow(ActionConfigService configService)
     {
@@ -258,6 +260,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             {
                 Hide();
                 ShowColorPickerWindow();
+                return;
+            }
+
+            if (IsTaskListAction(action))
+            {
+                Hide();
+                ShowTaskListWindow();
                 return;
             }
 
@@ -704,6 +713,23 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         colorPickerWindow.Activate();
     }
 
+    private void ShowTaskListWindow()
+    {
+        if (taskListWindow is { IsVisible: true })
+        {
+            taskListWindow.Activate();
+            return;
+        }
+
+        taskListWindow = new TaskListWindow(taskListService)
+        {
+            Owner = this
+        };
+        taskListWindow.Closed += (_, _) => taskListWindow = null;
+        taskListWindow.Show();
+        taskListWindow.Activate();
+    }
+
     private async Task StartWindowTopMostPickAsync()
     {
         var result = await WindowTopMostPickerOverlay.PickAndToggleAsync(windowTopMostService);
@@ -751,6 +777,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private static bool IsColorPickerAction(ActionItem action)
     {
         return string.Equals(action.Type, "colorPicker", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsTaskListAction(ActionItem action)
+    {
+        return string.Equals(action.Type, "taskList", StringComparison.OrdinalIgnoreCase);
     }
 
     private void CloseButton_Click(object sender, RoutedEventArgs e)

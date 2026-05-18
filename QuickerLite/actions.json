@@ -84,6 +84,12 @@
       "icon": "COLOR",
       "type": "colorPicker",
       "target": "screen"
+    },
+    {
+      "title": "计划列表",
+      "icon": "TODO",
+      "type": "taskList",
+      "target": "default"
     }
   ],
   "apps": {

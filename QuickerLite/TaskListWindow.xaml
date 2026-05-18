@@ -1,0 +1,91 @@
+<Window x:Class="QuickerLite.TaskListWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="计划列表"
+        Icon="Assets/AppIcon.ico"
+        Width="920"
+        Height="520"
+        MinWidth="700"
+        MinHeight="360"
+        WindowStartupLocation="CenterOwner"
+        Closing="Window_Closing">
+    <Window.Resources>
+        <x:Array x:Key="PriorityValues" Type="{x:Type sys:String}" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+            <sys:String>P0</sys:String>
+            <sys:String>P1</sys:String>
+            <sys:String>P2</sys:String>
+            <sys:String>P3</sys:String>
+        </x:Array>
+        <x:Array x:Key="StatusValues" Type="{x:Type sys:String}" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+            <sys:String>待办</sys:String>
+            <sys:String>进行中</sys:String>
+            <sys:String>完成</sys:String>
+            <sys:String>搁置</sys:String>
+        </x:Array>
+        <Style TargetType="Button">
+            <Setter Property="MinWidth" Value="72"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Padding" Value="8,0"/>
+            <Setter Property="Margin" Value="6,0,0,0"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="14">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel Margin="0,0,0,10">
+            <TextBlock Text="计划列表"
+                       FontSize="15"
+                       FontWeight="SemiBold"
+                       Foreground="#FF333333"/>
+            <TextBlock Text="双击单元格可编辑"
+                       DockPanel.Dock="Right"
+                       Foreground="#FF777777"
+                       FontSize="12"/>
+        </DockPanel>
+
+        <DataGrid x:Name="TaskGrid"
+                  Grid.Row="1"
+                  ItemsSource="{Binding Tasks}"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  SelectionMode="Extended"
+                  SelectionUnit="FullRow"
+                  CellEditEnding="TaskGrid_CellEditEnding"
+                  RowEditEnding="TaskGrid_RowEditEnding">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="日期" Binding="{Binding Date, UpdateSourceTrigger=PropertyChanged}" Width="105"/>
+                <DataGridComboBoxColumn Header="优先级"
+                                        SelectedItemBinding="{Binding Priority, UpdateSourceTrigger=PropertyChanged}"
+                                        ItemsSource="{StaticResource PriorityValues}"
+                                        Width="80"/>
+                <DataGridTextColumn Header="任务" Binding="{Binding Title, UpdateSourceTrigger=PropertyChanged}" Width="180"/>
+                <DataGridTextColumn Header="目标结果" Binding="{Binding Goal, UpdateSourceTrigger=PropertyChanged}" Width="220"/>
+                <DataGridComboBoxColumn Header="状态"
+                                        SelectedItemBinding="{Binding Status, UpdateSourceTrigger=PropertyChanged}"
+                                        ItemsSource="{StaticResource StatusValues}"
+                                        Width="90"/>
+                <DataGridTextColumn Header="备注" Binding="{Binding Notes, UpdateSourceTrigger=PropertyChanged}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <DockPanel Grid.Row="2" Margin="0,12,0,0" LastChildFill="False">
+            <Button Content="关闭"
+                    DockPanel.Dock="Right"
+                    Click="CloseButton_Click"/>
+            <Button Content="保存"
+                    DockPanel.Dock="Right"
+                    Click="SaveButton_Click"/>
+            <Button Content="删除选中"
+                    DockPanel.Dock="Right"
+                    Click="DeleteSelectedButton_Click"/>
+            <Button Content="新增任务"
+                    DockPanel.Dock="Right"
+                    Click="AddButton_Click"/>
+        </DockPanel>
+    </Grid>
+</Window>
